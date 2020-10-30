@@ -1,26 +1,26 @@
-"use strict";
+'use strict'
 
-import Vue from 'vue';
-import axios from "axios";
+import Vue from 'vue'
+import axios from 'axios'
 
-const _axios = axios.create({});
+const _axios = axios.create({})
 
 Plugin.install = function(Vue) {
-  Vue.axios = _axios;
+  Vue.axios = _axios
   Object.defineProperties(Vue.prototype, {
     axios: {
       get() {
-        return _axios;
-      }
+        return _axios
+      },
     },
     $axios: {
       get() {
-        return _axios;
-      }
+        return _axios
+      },
     },
-  });
-};
+  })
+}
 
 Vue.use(Plugin)
 
-export default Plugin;
+export default Plugin

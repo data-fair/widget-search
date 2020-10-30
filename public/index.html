@@ -13,7 +13,22 @@
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <div style="margin: 20px;">
+      <h2>Simple example: searching in vjsf documentation</h2>
+      <div style="width: 200px;margin: 20px;">
+        <div data-df-search-widget data-df-url="http://localhost:5600" data-dataset-id="web-crawler-dev"></div>
+      </div>
+
+      <h2>Same as previous example but dark </h2>
+      <div style="width: 200px;margin: 20px;">
+        <div data-df-search-widget data-df-url="http://localhost:5600" data-dataset-id="web-crawler-dev" data-dark></div>
+      </div>
+
+      <h2>Example with image: searching in icons</h2>
+      <div style="width: 200px;margin: 20px;">
+        <div data-df-search-widget data-df-url="https://koumoul.com/s/data-fair" data-dataset-id="icons-mdi-latest"></div>
+      </div>
+    <div>
     <!-- built files will be auto injected -->
   </body>
 </html>
