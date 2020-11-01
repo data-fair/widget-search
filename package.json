@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
-    "build-lib": "vue-cli-service build --target lib --name data-fair-search-widget src/main.js"
+    "build-lib": "vue-cli-service build --target lib --name data-fair-search-widget src/main.js",
+    "prepublish": "npm run lint && npm run build",
+    "postpublish": "gh-pages-multi deploy -v -s doc -t latest"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -22,6 +24,7 @@
     "eslint": "^6.8.0",
     "eslint-config-vuetify": "^0.6.1",
     "eslint-plugin-vue": "^6.2.2",
+    "gh-pages-multi": "^0.2.0",
     "sass": "^1.19.0",
     "sass-loader": "^8.0.0",
     "vue-cli-plugin-axios": "0.0.4",
