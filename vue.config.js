@@ -7,7 +7,7 @@ module.exports = {
   },
   css: {
     extract: {
-      filename: 'widget.css',
+      filename: 'vue-widget.css',
     },
   },
   chainWebpack: config => {
