@@ -3,7 +3,7 @@ module.exports = {
     'vuetify',
   ],
   configureWebpack: config => {
-    config.output.filename = process.env.VUE_CLI_MODERN_BUILD ? 'widget.js' : 'widget-legacy.js'
+    config.output.filename = process.env.VUE_CLI_MODERN_BUILD ? 'search-widget-modern.js' : 'search-widget.js'
   },
   css: {
     extract: {
