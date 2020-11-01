@@ -1,12 +1,12 @@
 <template>
   <v-app
-    style="width: auto;height: auto;"
+    style="width: auto;height: auto;background-color: transparent;"
     class="df-search-files-app"
+    :dark="dark"
   >
     <search-widget
       :df-url="dfUrl"
       :dataset-id="datasetId"
-      :dark="dark"
     />
   </v-app>
 </template>
