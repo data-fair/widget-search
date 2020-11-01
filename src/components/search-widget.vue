@@ -19,9 +19,7 @@
           placeholder="Rechercher"
           hide-details
           append-icon="mdi-magnify"
-          outlined
-          :solo="focused"
-          :filled="!focused"
+          solo
           dense
           rounded
           style="min-width:150px;"
