@@ -14,7 +14,6 @@ for (const element of elements) {
     if (attr.name === 'data-dataset-id') props.datasetId = attr.value
     if (attr.name === 'data-dark') props.dark = attr.value !== false
   }
-  console.log(props)
   const vuetify = new Vuetify({
     theme: {
       themes: {

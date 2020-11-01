@@ -8,7 +8,6 @@
       max-width="500"
       max-height="450"
       :close-on-click="false"
-      attach
       :elevation="0"
       :dark="dark"
     >
