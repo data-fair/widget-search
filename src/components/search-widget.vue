@@ -9,7 +9,6 @@
       max-height="450"
       :close-on-click="false"
       :elevation="0"
-      :dark="dark"
     >
       <template v-slot:activator="{}">
         <v-text-field
@@ -102,7 +101,6 @@
     props: {
       dfUrl: String,
       datasetId: String,
-      dark: Boolean,
     },
     data: () => ({
       menu: false,
