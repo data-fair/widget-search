@@ -5,10 +5,11 @@
       offset-y
       rounded="lg"
       :nudge-bottom="8"
-      max-width="500"
-      max-height="450"
+      :max-width="width"
+      max-height="500"
       :close-on-click="false"
       :elevation="0"
+      v-bind="menuProps"
     >
       <template v-slot:activator="{}">
         <v-text-field
@@ -18,11 +19,13 @@
           placeholder="Rechercher"
           hide-details
           append-icon="mdi-magnify"
-          solo
+          :outlined="theme.isDark"
+          :solo="!theme.isDark"
           dense
           rounded
-          style="min-width:150px;"
+          style="min-width:100px;"
           class="pa-1"
+          v-bind="textFieldProps"
           @input="input"
           @click="click"
           @focus="focus"
@@ -37,14 +40,16 @@
       <v-list
         v-if="lines && lines.length"
         class="py-0"
-        width="500"
+        :width="width"
       >
         <v-list-item
           v-for="line in lines"
           :key="line._id"
-          :two-line="line.highlight.length > 100"
-          :three-line="line.highlight.length > 200"
-          :href="line.url"
+          :two-line="line.highlight.length > 60 && line.highlight.length < 120"
+          :three-line="line.highlight.length > 120"
+          :href="!toLinks && line.url"
+          :to="toLinks && line.url"
+          @click="search = ''"
         >
           <v-list-item-avatar v-if="imageField">
             <v-img :src="line.image" />
@@ -98,9 +103,14 @@
 <script>
   export default {
     name: 'SearchWidget',
+    inject: ['theme'],
     props: {
       dfUrl: String,
       datasetId: String,
+      textFieldProps: Object,
+      menuProps: Object,
+      replaceUrl: Object,
+      toLinks: Boolean,
     },
     data: () => ({
       menu: false,
@@ -113,6 +123,9 @@
       size: 5,
     }),
     computed: {
+      width() {
+        return this.$vuetify.breakpoint.smAndDown ? 400 : 500
+      },
       pathField() {
         if (!this.schema) return
         const prop = this.schema.find(p => p['x-refersTo'] === 'http://schema.org/DigitalDocument')
@@ -193,6 +206,13 @@
             highlight: this.textField && result._highlight[this.textField].join('... '),
             tags: this.tagsField && result[this.tagsField] ? result[this.tagsField].split(',') : [],
           }))
+          if (this.replaceUrl) {
+            Object.keys(this.replaceUrl).forEach(key => {
+              this.lines.forEach(line => {
+                line.url = line.url.replace(key, this.replaceUrl[key])
+              })
+            })
+          }
         } else {
           this.menu = false
         }
