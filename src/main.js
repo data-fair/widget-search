@@ -17,7 +17,6 @@ for (const element of elements) {
     if (attr.name === 'data-dark') props.dark = attr.value !== false
     if (attr.name === 'data-primary-color') props.primaryColor = attr.value
   }
-  console.log(props)
   const vuetify = new Vuetify({
     theme: {
       themes: {

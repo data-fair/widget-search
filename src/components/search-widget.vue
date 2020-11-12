@@ -47,8 +47,8 @@
           :key="line._id"
           :two-line="line.highlight.length > 60 && line.highlight.length < 120"
           :three-line="line.highlight.length > 120"
-          :href="!toLinks && line.url"
-          :to="toLinks && line.url"
+          :href="toLinks ? null : line.url"
+          :to="toLinks ? line.url : null"
           @click="search = ''"
         >
           <v-list-item-avatar v-if="imageField">
@@ -117,9 +117,10 @@
       focused: false,
       loading: false,
       search: '',
+      currentSearch: null,
       lines: null,
       count: null,
-      schema: null,
+      dataset: null,
       size: 5,
     }),
     computed: {
@@ -127,40 +128,40 @@
         return this.$vuetify.breakpoint.smAndDown ? 400 : 500
       },
       pathField() {
-        if (!this.schema) return
-        const prop = this.schema.find(p => p['x-refersTo'] === 'http://schema.org/DigitalDocument')
+        if (!this.dataset) return
+        const prop = this.dataset.schema.find(p => p['x-refersTo'] === 'http://schema.org/DigitalDocument')
         return prop && prop.key
       },
       urlField() {
-        if (!this.schema) return
-        const prop = this.schema.find(p => p['x-refersTo'] === 'https://schema.org/WebPage') || this.schema.find(p => p['x-refersTo'] === 'http://schema.org/image')
+        if (!this.dataset) return
+        const prop = this.dataset.schema.find(p => p['x-refersTo'] === 'https://schema.org/WebPage') || this.dataset.schema.find(p => p['x-refersTo'] === 'http://schema.org/image')
         return prop && prop.key
       },
       titleField() {
-        if (!this.schema) return
-        const prop = this.schema.find(p => p['x-refersTo'] === 'http://www.w3.org/2000/01/rdf-schema#label')
+        if (!this.dataset) return
+        const prop = this.dataset.schema.find(p => p['x-refersTo'] === 'http://www.w3.org/2000/01/rdf-schema#label')
         return prop ? prop.key : '_id'
       },
       textField() {
-        if (!this.schema) return
+        if (!this.dataset) return
         let prop
         if (this.textKey) {
-          prop = this.schema.find(p => p.key === this.textKey)
+          prop = this.dataset.schema.find(p => p.key === this.textKey)
         } else if (this.pathField) {
-          prop = this.schema.find(p => p.key === '_file.content')
+          prop = this.dataset.schema.find(p => p.key === '_file.content')
         } else {
-          prop = this.schema.find(p => p['x-refersTo'] === 'http://schema.org/description')
+          prop = this.dataset.schema.find(p => p['x-refersTo'] === 'http://schema.org/description')
         }
         return prop && prop.key
       },
       imageField() {
-        if (!this.schema) return
-        const prop = this.schema.find(p => p['x-refersTo'] === 'http://schema.org/image')
+        if (!this.dataset) return
+        const prop = this.dataset.schema.find(p => p['x-refersTo'] === 'http://schema.org/image')
         return prop && prop.key
       },
       tagsField() {
-        if (!this.schema) return
-        const prop = this.schema.find(p => p['x-refersTo'] === 'https://schema.org/DefinedTermSet')
+        if (!this.dataset) return
+        const prop = this.dataset.schema.find(p => p['x-refersTo'] === 'https://schema.org/DefinedTermSet')
         return prop && prop.key
       },
     },
@@ -180,15 +181,16 @@
     },
     methods: {
       init() {
-        this.schemaPromise = this.$axios.get(`${this.dfUrl}/api/v1/datasets/${this.datasetId}/schema`)
-          .then(res => { this.schema = res.data })
+        this.datasetPromise = this.$axios.get(`${this.dfUrl}/api/v1/datasets/${this.datasetId}`)
+          .then(res => { this.dataset = res.data })
       },
       async input(search, size = 5) {
         this.size = size
-        await this.schemaPromise
+        this.currentSearch = search
+        await this.datasetPromise
         if (search.length) {
           this.menu = true
-          const params = { q: search, size }
+          const params = { q: search, size, q_mode: 'complete', finalizedAt: this.dataset.finalizedAt }
           if (this.textField) params.highlight = this.textField
           params.select = this.titleField
           if (this.urlField) params.select += ',' + this.urlField
@@ -196,6 +198,8 @@
           if (this.tagsField) params.select += ',' + this.tagsField
           this.loading = true
           const res = (await this.$axios.get(`${this.dfUrl}/api/v1/datasets/${this.datasetId}/lines`, { params })).data
+          // another input was sent in the meantime, ignore this result
+          if (this.currentSearch !== search) return
           this.loading = false
           this.count = res.total
           this.lines = res.results.map(result => ({
