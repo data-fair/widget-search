@@ -1,4 +1,4 @@
-# data-fair-search-widget
+# data-fair/widget-search
 
 ## Project setup
 ```

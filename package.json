@@ -1,11 +1,11 @@
 {
-  "name": "@koumoul/data-fair-search-widget",
+  "name": "@data-fair/widget-search",
   "version": "0.3.0",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build-lib": "vue-cli-service build --target lib --name data-fair-search-widget src/main.js",
+    "build-lib": "vue-cli-service build --target lib --name data-fair-widget-search src/main.js",
     "prepublish": "npm run lint && npm run build",
     "postpublish": "gh-pages-multi deploy -v -s doc -t latest"
   },
